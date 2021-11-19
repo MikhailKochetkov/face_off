@@ -3,6 +3,8 @@ from tkinter import filedialog
 from PIL import ImageTk, Image
 import webcam_app
 import cv2.cv2 as cv2
+import time
+import os
 
 
 class Application(Frame):
@@ -65,8 +67,8 @@ class Application(Frame):
         return filename
 
     def open_img(self):
-        ofn = self.open_file_name()
-        img = Image.open(ofn)
+        self.ofn = self.open_file_name()
+        img = Image.open(self.ofn)
         img = ImageTk.PhotoImage(img)
         self.image_cnvs.create_image(10, 10, anchor=NW, image=img)
         self.image_cnvs.image = img
@@ -76,7 +78,22 @@ class Application(Frame):
         webcam_app.WebCamApplication()
 
     def find_face(self):
-        pass
+        face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+        face_rec = cv2.imread(self.ofn)
+        gray = cv2.cvtColor(face_rec, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(face_rec, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        cv2.imwrite("image-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", face_rec)
+        file = max(os.listdir(), key=os.path.getctime)
+        self.image_cnvs.destroy()
+        file_img = Image.open(file)
+        file_img = ImageTk.PhotoImage(file_img)
+        self.new_image_cnvs = Canvas(self.image_file, width=850, height=580)
+        self.new_image_cnvs.grid()
+        self.new_image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
+        self.new_image_cnvs.image = file_img
+        self.new_image_cnvs.pack()
 
     def recognize(self):
         pass
