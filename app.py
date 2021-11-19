@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+import tkinter.ttk as ttk
 from PIL import ImageTk, Image
 import webcam_app
 import cv2.cv2 as cv2
@@ -15,51 +16,51 @@ class Application(Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        image_frame = Frame(self.master)
-        image_frame.grid(row=0, column=0, rowspan=6, columnspan=1, sticky=NW)
-        self.image_file = LabelFrame(image_frame, text=" original image ")
-        self.image_file.grid(padx=5, pady=2)
+        notebook = ttk.Notebook(self.master, width=1400, height=800)
+        notebook.pack()
+
+        main_frame = ttk.Frame(notebook)
+        neural_net_frame = ttk.Frame(notebook)
+        notebook.add(main_frame, text='main screen')
+        notebook.add(neural_net_frame, text='neural network')
+
+        self.image_file = ttk.LabelFrame(main_frame, text=" original image ")
+        self.image_file.grid(row=0, column=0, rowspan=6, columnspan=1, padx=5, pady=2, sticky=NW)
         self.image_cnvs = Canvas(self.image_file, width=850, height=580)
         self.image_cnvs.grid()
         self.image_file.propagate(False)
 
-        emo_frame = Frame(self.master)
-        emo_frame.grid(row=6, column=0, rowspan=1, columnspan=3, sticky=NW)
-        self.emo = LabelFrame(emo_frame, text=" emotion ")
-        self.emo.grid(padx=5, pady=2)
+        self.emo = ttk.LabelFrame(main_frame, text=" emotion ")
+        self.emo.grid(row=6, column=0, rowspan=1, columnspan=3, padx=5, pady=2, sticky=NW)
         self.emo_cnvs = Canvas(self.emo, width=1382, height=160)
         self.emo_cnvs.grid()
         self.emo.propagate(False)
 
-        rec_frame = Frame(self.master)
-        rec_frame.grid(row=0, column=1, rowspan=1, columnspan=1, sticky=NW)
-        self.image_rec = LabelFrame(rec_frame, text=" recognized ")
-        self.image_rec.grid(padx=2, pady=2)
+        self.image_rec = ttk.LabelFrame(main_frame, text=" recognized ")
+        self.image_rec.grid(row=0, column=1, rowspan=1, columnspan=1, padx=2, pady=2, sticky=NW)
         self.rec_cnvs = Canvas(self.image_rec, width=250, height=300)
         self.rec_cnvs.grid()
         self.image_rec.propagate(False)
 
-        sample_frame = Frame(self.master)
-        sample_frame.grid(row=0, column=2, rowspan=1, columnspan=1, sticky=NW)
-        self.image_sam = LabelFrame(sample_frame, text=" sample ")
-        self.image_sam.grid(padx=5, pady=2)
+        self.image_sam = ttk.LabelFrame(main_frame, text=" sample ")
+        self.image_sam.grid(row=0, column=2, rowspan=1, columnspan=1, padx=5, pady=2, sticky=NW)
         self.sam_cnvs = Canvas(self.image_sam, width=250, height=300)
         self.sam_cnvs.grid()
         self.image_sam.propagate(False)
 
-        self.open_btn = Button(text="open image", width=73, height=3, command=self.open_img)
+        self.open_btn = Button(main_frame, text="open image", width=73, height=3, command=self.open_img)
         self.open_btn.grid(row=1, column=1, columnspan=2, padx=2, sticky=NW)
 
-        self.webcam_btn = Button(text="use webcam", width=73, height=3, command=self.use_webcam)
+        self.webcam_btn = Button(main_frame, text="use webcam", width=73, height=3, command=self.use_webcam)
         self.webcam_btn.grid(row=2, column=1, columnspan=2, padx=2, sticky=NW)
 
-        self.face_btn = Button(text="find face", width=73, height=3, command=self.find_face)
+        self.face_btn = Button(main_frame, text="find face", width=73, height=3, command=self.find_face)
         self.face_btn.grid(row=3, column=1, columnspan=2, padx=2, sticky=NW)
 
-        self.recognize_btn = Button(text="recognize", width=73, height=3, command=self.recognize)
+        self.recognize_btn = Button(main_frame, text="recognize", width=73, height=3, command=self.recognize)
         self.recognize_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
 
-        self.clear_btn = Button(text="clear", width=73, height=3, command=self.clear)
+        self.clear_btn = Button(main_frame, text="clear", width=73, height=3, command=self.clear)
         self.clear_btn.grid(row=5, column=1, columnspan=2, padx=2, sticky=NW)
 
     def open_file_name(self):
@@ -114,7 +115,7 @@ class Application(Frame):
 def main():
     root = Tk()
     root.title('emotion recognition')
-    root.geometry("1400x800")
+    root.geometry("1430x840")
     root.resizable(FALSE, FALSE)
     app = Application(root)
     root.mainloop()
