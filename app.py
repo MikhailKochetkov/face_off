@@ -86,20 +86,18 @@ class Application(Frame):
             cv2.rectangle(face_rec, (x, y), (x + w, y + h), (255, 0, 0), 2)
         cv2.imwrite("image-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", face_rec)
         file = max(os.listdir(), key=os.path.getctime)
-        self.image_cnvs.destroy()
+        self.image_cnvs.delete("all")
         file_img = Image.open(file)
         file_img = ImageTk.PhotoImage(file_img)
-        self.new_image_cnvs = Canvas(self.image_file, width=850, height=580)
-        self.new_image_cnvs.grid()
-        self.new_image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
-        self.new_image_cnvs.image = file_img
-        self.new_image_cnvs.pack()
+        self.image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
+        self.image_cnvs.image = file_img
+        self.image_cnvs.pack()
 
     def recognize(self):
         pass
 
     def clear(self):
-        self.image_cnvs.destroy()
+        self.image_cnvs.delete("all")
 
 
 def main():
