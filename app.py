@@ -92,12 +92,23 @@ class Application(Frame):
         self.image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
         self.image_cnvs.image = file_img
         self.image_cnvs.pack()
+        crop = face_rec[y:y + h, x:x + w]
+        cv2.imwrite("crop-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", crop)
+        crop_file = max(os.listdir(), key=os.path.getctime)
+        crop_img = Image.open(crop_file)
+        crop_img = crop_img.resize((230, 230), Image.ANTIALIAS)
+        crop_img = ImageTk.PhotoImage(crop_img)
+        self.rec_cnvs.create_image(10, 10, anchor=NW, image=crop_img)
+        self.rec_cnvs.image = crop_img
+        self.rec_cnvs.pack()
 
     def recognize(self):
         pass
 
     def clear(self):
         self.image_cnvs.delete("all")
+        self.rec_cnvs.delete("all")
+        self.sam_cnvs.delete("all")
 
 
 def main():
