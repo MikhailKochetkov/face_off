@@ -1,11 +1,12 @@
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import tkinter.ttk as ttk
 from PIL import ImageTk, Image
 import webcam_app
 import cv2.cv2 as cv2
 import time
 import os
+import numpy as np
 
 
 class Application(Frame):
@@ -83,25 +84,28 @@ class Application(Frame):
         face_rec = cv2.imread(self.ofn)
         gray = cv2.cvtColor(face_rec, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for (x, y, w, h) in faces:
-            cv2.rectangle(face_rec, (x, y), (x + w, y + h), (255, 0, 0), 2)
-        cv2.imwrite("image-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", face_rec)
-        file = max(os.listdir(), key=os.path.getctime)
-        self.image_cnvs.delete("all")
-        file_img = Image.open(file)
-        file_img = ImageTk.PhotoImage(file_img)
-        self.image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
-        self.image_cnvs.image = file_img
-        self.image_cnvs.pack()
-        crop = face_rec[y:y + h, x:x + w]
-        cv2.imwrite("crop-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", crop)
-        crop_file = max(os.listdir(), key=os.path.getctime)
-        crop_img = Image.open(crop_file)
-        crop_img = crop_img.resize((230, 230), Image.ANTIALIAS)
-        crop_img = ImageTk.PhotoImage(crop_img)
-        self.rec_cnvs.create_image(10, 10, anchor=NW, image=crop_img)
-        self.rec_cnvs.image = crop_img
-        self.rec_cnvs.pack()
+        if not np.any(faces):
+            messagebox.showinfo("Info", "Face not found")
+        else:
+            for (x, y, w, h) in faces:
+                cv2.rectangle(face_rec, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            cv2.imwrite("image-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", face_rec)
+            file = max(os.listdir(), key=os.path.getctime)
+            self.image_cnvs.delete("all")
+            file_img = Image.open(file)
+            file_img = ImageTk.PhotoImage(file_img)
+            self.image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
+            self.image_cnvs.image = file_img
+            self.image_cnvs.pack()
+            crop = face_rec[y:y + h, x:x + w]
+            cv2.imwrite("crop-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", crop)
+            crop_file = max(os.listdir(), key=os.path.getctime)
+            crop_img = Image.open(crop_file)
+            crop_img = crop_img.resize((230, 230), Image.ANTIALIAS)
+            crop_img = ImageTk.PhotoImage(crop_img)
+            self.rec_cnvs.create_image(10, 10, anchor=NW, image=crop_img)
+            self.rec_cnvs.image = crop_img
+            self.rec_cnvs.pack()
 
     def recognize(self):
         pass
@@ -112,6 +116,14 @@ class Application(Frame):
         self.sam_cnvs.delete("all")
 
 
+"""
+    def on_closing(self):
+        for i in os.listdir():
+            if i.endswith(".jpg"):
+                os.remove(os.path.join(os.getcwd(), i))
+"""
+
+
 def main():
     root = Tk()
     root.title('emotion recognition')
@@ -119,3 +131,4 @@ def main():
     root.resizable(FALSE, FALSE)
     app = Application(root)
     root.mainloop()
+    # app.on_closing()
