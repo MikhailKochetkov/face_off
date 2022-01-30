@@ -132,7 +132,7 @@ class Application(Frame):
             sample_faces.append(face.astype('float32'))
         sample_faces = np.asarray(sample_faces)
         sample_faces = np.expand_dims(sample_faces, -1)
-        model = load_model('fer_model_finetuned.h5')
+        model = load_model('fer_model.h5')
         predictions = model.predict(sample_faces, verbose=0)
         txt = "This image most likely belongs to {} with a {:.2f} percent confidence".format(
             EMOTIONS[np.argmax(predictions)], round(100 * np.max(predictions), 2))
