@@ -7,6 +7,10 @@ import cv2.cv2 as cv2
 import time
 import os
 import numpy as np
+import csv
+from tensorflow.keras.models import load_model
+import pandas as pd
+from constants import *
 
 
 class Application(Frame):
@@ -21,9 +25,9 @@ class Application(Frame):
         notebook.pack()
 
         main_frame = ttk.Frame(notebook)
-        neural_net_frame = ttk.Frame(notebook)
+        # neural_net_frame = ttk.Frame(notebook)
         notebook.add(main_frame, text='main screen')
-        notebook.add(neural_net_frame, text='neural network')
+        # notebook.add(neural_net_frame, text='neural network')
 
         self.image_file = ttk.LabelFrame(main_frame, text=" original image ")
         self.image_file.grid(row=0, column=0, rowspan=6, columnspan=1, padx=5, pady=2, sticky=NW)
@@ -108,20 +112,49 @@ class Application(Frame):
             self.rec_cnvs.pack()
 
     def recognize(self):
-        pass
+        crp_file = max(os.listdir(), key=os.path.getctime)
+        crp_img = Image.open(crp_file)
+        resize_img = crp_img.resize((48, 48), Image.ANTIALIAS)
+        resize_img_gray = resize_img.convert('L')
+        value = np.asarray(resize_img_gray.getdata(), dtype=np.int32).reshape(
+            (resize_img_gray.size[1], resize_img_gray.size[0]))
+        value = value.flatten()
+        with open("resize-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".csv", 'a') as f:
+            writer = csv.writer(f, delimiter=' ')
+            writer.writerow(value)
+            f.close()
+        img_csv = pd.read_csv(f.name)
+        sample_faces = []
+        for pixel_sequence in img_csv:
+            face = [int(pixel) for pixel in pixel_sequence.split()]
+            face = np.asarray(face).reshape(IMG_SIZE, IMG_SIZE)
+            face = face / 255.0
+            sample_faces.append(face.astype('float32'))
+        sample_faces = np.asarray(sample_faces)
+        sample_faces = np.expand_dims(sample_faces, -1)
+        model = load_model('fer_model_finetuned.h5')
+        predictions = model.predict(sample_faces, verbose=0)
+        txt = "This image most likely belongs to {} with a {:.2f} percent confidence".format(
+            EMOTIONS[np.argmax(predictions)], round(100 * np.max(predictions), 2))
+        self.emo_cnvs.create_text(650, 80, text=txt, justify=CENTER, font="Verdana 24")
+        self.emo_cnvs.pack()
+        sam_img = Image.open("./samples/" + EMOTIONS[np.argmax(predictions)] + ".jpg")
+        sam_img = sam_img.resize((230, 230), Image.ANTIALIAS)
+        sam_img = ImageTk.PhotoImage(sam_img)
+        self.sam_cnvs.create_image(10, 10, anchor=NW, image=sam_img)
+        self.sam_cnvs.image = sam_img
+        self.sam_cnvs.pack()
 
     def clear(self):
         self.image_cnvs.delete("all")
         self.rec_cnvs.delete("all")
         self.sam_cnvs.delete("all")
+        self.emo_cnvs.delete("all")
 
-
-"""
     def on_closing(self):
         for i in os.listdir():
-            if i.endswith(".jpg"):
+            if i.endswith(".jpg") or i.endswith(".csv"):
                 os.remove(os.path.join(os.getcwd(), i))
-"""
 
 
 def main():
@@ -131,4 +164,4 @@ def main():
     root.resizable(FALSE, FALSE)
     app = Application(root)
     root.mainloop()
-    # app.on_closing()
+    app.on_closing()
