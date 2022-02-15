@@ -1,6 +1,7 @@
 from tkinter import *
-from tkinter import filedialog, messagebox
+from tkinter import messagebox
 import tkinter.ttk as ttk
+import PIL
 from PIL import ImageTk, Image
 import webcam_app
 import cv2.cv2 as cv2
@@ -11,6 +12,7 @@ import csv
 from tensorflow.keras.models import load_model
 import pandas as pd
 from constants import *
+import image_handler as ih
 
 
 class Application(Frame):
@@ -68,19 +70,15 @@ class Application(Frame):
         self.clear_btn = Button(main_frame, text="clear", width=73, height=3, command=self.clear)
         self.clear_btn.grid(row=5, column=1, columnspan=2, padx=2, sticky=NW)
 
-    def open_file_name(self):
-        filename = filedialog.askopenfilename(title='open')
-        return filename
-
     def open_img(self):
         try:
-            self.ofn = self.open_file_name()
+            self.ofn = ih.ImageHandler.open_file_name(self)
             img = Image.open(self.ofn)
             img = ImageTk.PhotoImage(img)
             self.image_cnvs.create_image(10, 10, anchor=NW, image=img)
             self.image_cnvs.image = img
             self.image_cnvs.pack()
-        except Exception:
+        except PIL.UnidentifiedImageError:
             messagebox.showinfo("Info", "The selected file is not an image")
 
     def use_webcam(self):
