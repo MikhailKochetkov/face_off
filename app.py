@@ -73,43 +73,49 @@ class Application(Frame):
         return filename
 
     def open_img(self):
-        self.ofn = self.open_file_name()
-        img = Image.open(self.ofn)
-        img = ImageTk.PhotoImage(img)
-        self.image_cnvs.create_image(10, 10, anchor=NW, image=img)
-        self.image_cnvs.image = img
-        self.image_cnvs.pack()
+        try:
+            self.ofn = self.open_file_name()
+            img = Image.open(self.ofn)
+            img = ImageTk.PhotoImage(img)
+            self.image_cnvs.create_image(10, 10, anchor=NW, image=img)
+            self.image_cnvs.image = img
+            self.image_cnvs.pack()
+        except Exception:
+            messagebox.showinfo("Info", "The selected file is not an image")
 
     def use_webcam(self):
         webcam_app.WebCamApplication()
 
     def find_face(self):
-        face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-        face_rec = cv2.imread(self.ofn)
-        gray = cv2.cvtColor(face_rec, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        if not np.any(faces):
-            messagebox.showinfo("Info", "Face not found")
-        else:
-            for (x, y, w, h) in faces:
-                cv2.rectangle(face_rec, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            cv2.imwrite("image-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", face_rec)
-            file = max(os.listdir(), key=os.path.getctime)
-            self.image_cnvs.delete("all")
-            file_img = Image.open(file)
-            file_img = ImageTk.PhotoImage(file_img)
-            self.image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
-            self.image_cnvs.image = file_img
-            self.image_cnvs.pack()
-            crop = face_rec[y:y + h, x:x + w]
-            cv2.imwrite("crop-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", crop)
-            crop_file = max(os.listdir(), key=os.path.getctime)
-            crop_img = Image.open(crop_file)
-            crop_img = crop_img.resize((230, 230), Image.ANTIALIAS)
-            crop_img = ImageTk.PhotoImage(crop_img)
-            self.rec_cnvs.create_image(10, 10, anchor=NW, image=crop_img)
-            self.rec_cnvs.image = crop_img
-            self.rec_cnvs.pack()
+        try:
+            face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+            face_rec = cv2.imread(self.ofn)
+            gray = cv2.cvtColor(face_rec, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            if not np.any(faces):
+                messagebox.showinfo("Info", "Face not found")
+            else:
+                for (x, y, w, h) in faces:
+                    cv2.rectangle(face_rec, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                cv2.imwrite("image-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", face_rec)
+                file = max(os.listdir(), key=os.path.getctime)
+                self.image_cnvs.delete("all")
+                file_img = Image.open(file)
+                file_img = ImageTk.PhotoImage(file_img)
+                self.image_cnvs.create_image(10, 10, anchor=NW, image=file_img)
+                self.image_cnvs.image = file_img
+                self.image_cnvs.pack()
+                crop = face_rec[y:y + h, x:x + w]
+                cv2.imwrite("crop-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", crop)
+                crop_file = max(os.listdir(), key=os.path.getctime)
+                crop_img = Image.open(crop_file)
+                crop_img = crop_img.resize((230, 230), Image.ANTIALIAS)
+                crop_img = ImageTk.PhotoImage(crop_img)
+                self.rec_cnvs.create_image(10, 10, anchor=NW, image=crop_img)
+                self.rec_cnvs.image = crop_img
+                self.rec_cnvs.pack()
+        except Exception:
+            messagebox.showinfo("Info", "File not selected")
 
     def recognize(self):
         crp_file = max(os.listdir(), key=os.path.getctime)
