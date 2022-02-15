@@ -1,2 +1,3 @@
 class ImageHandler:
-    pass
+    def rgb_to_gray(self):
+        pass
