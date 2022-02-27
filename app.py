@@ -86,7 +86,7 @@ class Application(Frame):
 
     def find_face(self):
         try:
-            face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+            face_cascade = cv2.CascadeClassifier(CASCADE)
             face_rec = cv2.imread(self.ofn)
             gray = cv2.cvtColor(face_rec, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, 1.3, 5)
