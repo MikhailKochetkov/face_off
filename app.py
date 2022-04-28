@@ -38,8 +38,10 @@ class Application(Frame):
         self.image_file.propagate(False)
 
         self.emo = ttk.LabelFrame(main_frame, text=" emotion ")
-        self.emo.grid(row=6, column=0, rowspan=1, columnspan=3, padx=5, pady=2, sticky=NW)
-        self.emo_cnvs = Canvas(self.emo, width=1382, height=160)
+        # self.emo.grid(row=6, column=0, rowspan=1, columnspan=3, padx=5, pady=2, sticky=NW)
+        self.emo.grid(row=6, column=0, rowspan=3, columnspan=1, padx=5, pady=2, sticky=NW)
+        # self.emo_cnvs = Canvas(self.emo, width=1382, height=160)
+        self.emo_cnvs = Canvas(self.emo, width=850, height=160)
         self.emo_cnvs.grid()
         self.emo.propagate(False)
 
@@ -64,11 +66,27 @@ class Application(Frame):
         self.face_btn = Button(main_frame, text="find face", width=73, height=3, command=self.find_face)
         self.face_btn.grid(row=3, column=1, columnspan=2, padx=2, sticky=NW)
 
+        self.model_btn = Button(main_frame, text="choose model", width=73, height=3)
+        self.model_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
+        self.model_btn["state"] = "disabled"
+
         self.recognize_btn = Button(main_frame, text="recognize", width=73, height=3, command=self.recognize)
-        self.recognize_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
+        # self.recognize_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
+        self.recognize_btn.grid(row=5, column=1, columnspan=2, padx=2, sticky=NW)
+
+        self.chart_btn = Button(main_frame, text="show chart", width=73, height=3)
+        self.chart_btn.grid(row=6, column=1, columnspan=2, padx=2, sticky=NW)
+        self.chart_btn["state"] = "disabled"
 
         self.clear_btn = Button(main_frame, text="clear", width=73, height=3, command=self.clear)
-        self.clear_btn.grid(row=5, column=1, columnspan=2, padx=2, sticky=NW)
+        # self.clear_btn.grid(row=5, column=1, columnspan=2, padx=2, sticky=NW)
+        self.clear_btn.grid(row=7, column=1, columnspan=2, padx=2, sticky=NW)
+
+        self.frame = ttk.Frame(main_frame)
+        self.frame.grid(row=8, column=1, rowspan=1, columnspan=2, padx=5, pady=1)
+        self.frame_cnvs = Canvas(self.frame, width=510, height=50)
+        self.frame_cnvs.create_text(250, 27, text="Developed by Mikhail Kochetkov, 2021", justify=CENTER, font="Verdana 10")
+        self.frame_cnvs.grid()
 
     def open_img(self):
         try:
@@ -138,9 +156,9 @@ class Application(Frame):
         sample_faces = np.expand_dims(sample_faces, -1)
         model = load_model('fer_model.h5')
         predictions = model.predict(sample_faces, verbose=0)
-        txt = "This image most likely belongs to {} with a {:.2f} percent confidence".format(
+        txt = "This image most likely belongs to\n {} with a {:.2f} percent confidence".format(
             EMOTIONS[np.argmax(predictions)], round(100 * np.max(predictions), 2))
-        self.emo_cnvs.create_text(650, 80, text=txt, justify=CENTER, font="Verdana 24")
+        self.emo_cnvs.create_text(450, 80, text=txt, justify=CENTER, font="Verdana 24")
         self.emo_cnvs.pack()
         sam_img = Image.open("./samples/" + EMOTIONS[np.argmax(predictions)] + ".jpg")
         sam_img = sam_img.resize((230, 230), Image.ANTIALIAS)
@@ -168,4 +186,4 @@ def main():
     root.resizable(FALSE, FALSE)
     app = Application(root)
     root.mainloop()
-    app.on_closing()
+    # app.on_closing()
