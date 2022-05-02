@@ -12,7 +12,7 @@ import csv
 from tensorflow.keras.models import load_model
 import pandas as pd
 from constants import *
-import image_handler as ih
+import file_handler as fh
 
 
 class Application(Frame):
@@ -90,7 +90,7 @@ class Application(Frame):
 
     def open_img(self):
         try:
-            self.ofn = ih.FileHandler.open_image_name(self)
+            self.ofn = fh.FileHandler.open_image_name(self)
             img = Image.open(self.ofn)
             img = ImageTk.PhotoImage(img)
             self.image_cnvs.create_image(10, 10, anchor=NW, image=img)
