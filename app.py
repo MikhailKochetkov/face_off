@@ -24,7 +24,7 @@ class Application(Frame):
 
     def create_widgets(self):
         notebook = ttk.Notebook(self.master, width=1400, height=800)
-        notebook.pack()
+        notebook.pack(expand=True, fill=BOTH)
 
         main_frame = ttk.Frame(notebook)
         # neural_net_frame = ttk.Frame(notebook)
@@ -183,7 +183,7 @@ def main():
     root = Tk()
     root.title('emotion recognition')
     root.geometry("1430x840")
-    root.resizable(FALSE, FALSE)
+    root.resizable(TRUE, TRUE)
     app = Application(root)
     root.mainloop()
     # app.on_closing()
