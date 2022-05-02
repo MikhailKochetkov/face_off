@@ -90,7 +90,7 @@ class Application(Frame):
 
     def open_img(self):
         try:
-            self.ofn = ih.FileHandler.open_file_name(self)
+            self.ofn = ih.FileHandler.open_image_name(self)
             img = Image.open(self.ofn)
             img = ImageTk.PhotoImage(img)
             self.image_cnvs.create_image(10, 10, anchor=NW, image=img)

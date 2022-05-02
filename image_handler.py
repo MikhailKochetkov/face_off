@@ -2,9 +2,12 @@ from tkinter import filedialog
 
 
 class FileHandler:
-    def open_file_name(self):
-        filename = filedialog.askopenfilename(title='open')
-        return filename
+    def open_image_name(self):
+        imagename = filedialog.askopenfilename(title='open')
+        return imagename
+
+    def open_model_name(self):
+        pass
 
     def rgb_to_gray(self):
         pass
