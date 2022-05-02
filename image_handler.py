@@ -1,7 +1,7 @@
 from tkinter import filedialog
 
 
-class ImageHandler:
+class FileHandler:
     def open_file_name(self):
         filename = filedialog.askopenfilename(title='open')
         return filename
