@@ -66,9 +66,9 @@ class Application(Frame):
         self.face_btn = Button(main_frame, text="find face", width=73, height=3, command=self.find_face)
         self.face_btn.grid(row=3, column=1, columnspan=2, padx=2, sticky=NW)
 
-        self.model_btn = Button(main_frame, text="choose model", width=73, height=3)
+        self.model_btn = Button(main_frame, text="choose model", width=73, height=3, command=self.choose_model)
         self.model_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
-        self.model_btn["state"] = "disabled"
+        # self.model_btn["state"] = "disabled"
 
         self.recognize_btn = Button(main_frame, text="recognize", width=73, height=3, command=self.recognize)
         # self.recognize_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
@@ -133,6 +133,9 @@ class Application(Frame):
         except Exception:
             messagebox.showinfo("Info", "File not selected")
 
+    def choose_model(self):
+        self.mdl = fh.FileHandler.open_model_name(self)
+
     def recognize(self):
         crp_file = max(os.listdir(), key=os.path.getctime)
         crp_img = Image.open(crp_file)
@@ -154,7 +157,8 @@ class Application(Frame):
             sample_faces.append(face.astype('float32'))
         sample_faces = np.asarray(sample_faces)
         sample_faces = np.expand_dims(sample_faces, -1)
-        model = load_model('fer_model.h5')
+        # model = load_model('fer_model.h5')
+        model = load_model(self.mdl)
         predictions = model.predict(sample_faces, verbose=0)
         txt = "This image most likely belongs to\n {} with a {:.2f} percent confidence".format(
             EMOTIONS[np.argmax(predictions)], round(100 * np.max(predictions), 2))
@@ -186,4 +190,4 @@ def main():
     root.resizable(TRUE, TRUE)
     app = Application(root)
     root.mainloop()
-    # app.on_closing()
+    app.on_closing()

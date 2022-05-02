@@ -7,7 +7,8 @@ class FileHandler:
         return imagename
 
     def open_model_name(self):
-        pass
+        modelname = filedialog.askopenfilename(title='open model', filetypes=(('Model files', '*.h5'), ('All files', '*.*')))
+        return modelname
 
     def rgb_to_gray(self):
         pass
