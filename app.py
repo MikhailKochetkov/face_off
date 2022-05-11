@@ -139,7 +139,7 @@ class Application(Frame):
     def recognize(self):
         crp_file = max(os.listdir(), key=os.path.getctime)
         crp_img = Image.open(crp_file)
-        resize_img = crp_img.resize((48, 48), Image.ANTIALIAS)
+        resize_img = crp_img.resize((IMG_SIZE, IMG_SIZE), Image.ANTIALIAS)
         resize_img_gray = resize_img.convert('L')
         value = np.asarray(resize_img_gray.getdata(), dtype=np.int32).reshape(
             (resize_img_gray.size[1], resize_img_gray.size[0]))
