@@ -13,6 +13,7 @@ from tensorflow.keras.models import load_model
 import pandas as pd
 from constants import *
 import file_handler as fh
+import matplotlib.pyplot as plt
 
 
 class Application(Frame):
@@ -74,7 +75,7 @@ class Application(Frame):
         # self.recognize_btn.grid(row=4, column=1, columnspan=2, padx=2, sticky=NW)
         self.recognize_btn.grid(row=5, column=1, columnspan=2, padx=2, sticky=NW)
 
-        self.chart_btn = Button(main_frame, text="show chart", width=73, height=3)
+        self.chart_btn = Button(main_frame, text="show chart", width=73, height=3, command=self.show_chart)
         self.chart_btn.grid(row=6, column=1, columnspan=2, padx=2, sticky=NW)
         self.chart_btn["state"] = "disabled"
 
@@ -170,6 +171,9 @@ class Application(Frame):
         self.sam_cnvs.create_image(10, 10, anchor=NW, image=sam_img)
         self.sam_cnvs.image = sam_img
         self.sam_cnvs.pack()
+
+    def show_chart(self):
+        pass
 
     def clear(self):
         self.image_cnvs.delete("all")

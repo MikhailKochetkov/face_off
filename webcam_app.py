@@ -2,7 +2,9 @@ from tkinter import *
 import time
 import PIL.Image
 import PIL.ImageTk
+from PIL import Image
 import cv2
+from tkinter import filedialog
 
 
 class WebCamApplication(Toplevel):
@@ -10,7 +12,7 @@ class WebCamApplication(Toplevel):
         super().__init__()
         self.title("use webcam")
         self.geometry("650x530")
-        self.resizable(True, True)
+        self.resizable(FALSE, FALSE)
         self.video_source = video_source
         self.create_webcam_widgets()
 
@@ -26,7 +28,10 @@ class WebCamApplication(Toplevel):
     def snapshot(self):
         ret, frame = self.vid.get_frame()
         if ret:
-            cv2.imwrite("frame-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+            snapshot_name = filedialog.asksaveasfilename(filetypes=[("jpeg file", ".jpg")], title="Save As")
+            img = Image.fromarray(frame, 'RGB')
+            img.save(str(snapshot_name) + '.jpg')
+            # cv2.imwrite("frame-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
 
     def update(self):
         ret, frame = self.vid.get_frame()
