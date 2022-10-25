@@ -13,7 +13,6 @@ from tensorflow.keras.models import load_model
 import pandas as pd
 from constants import *
 import file_handler as fh
-import matplotlib.pyplot as plt
 
 
 class Application(Frame):
