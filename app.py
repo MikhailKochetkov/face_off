@@ -190,7 +190,7 @@ def main():
     root = Tk()
     root.title('emotion recognition')
     root.geometry("1430x840")
-    root.resizable(FALSE, FALSE)
+    root.resizable(TRUE, TRUE)
     app = Application(root)
     root.mainloop()
     app.on_closing()
