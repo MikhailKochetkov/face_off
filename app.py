@@ -84,7 +84,7 @@ class Application(Frame):
 
         self.frame = ttk.Frame(main_frame)
         self.frame.grid(row=8, column=1, rowspan=1, columnspan=2, padx=5, pady=1)
-        self.frame_cnvs = Canvas(self.frame, width=510, height=50)
+        self.frame_cnvs = Canvas(self.frame, width=510, height=68)
         self.frame_cnvs.create_text(250, 27, text="Developed by Mikhail Kochetkov, 2021", justify=CENTER, font="Verdana 10")
         self.frame_cnvs.grid()
 
